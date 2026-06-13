@@ -1,107 +1,56 @@
-import java.util.Scanner;
-
+import java.util.*;
 class Passenger {
-    private String name;
-    private int passengerId;
-    public Passenger(String name, int passengerId) {
+    String name;
+    int id;
+    Passenger(String name, int id) {
         this.name = name;
-        this.passengerId = passengerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPassengerId() {
-        return passengerId;
+        this.id = id;
     }
 }
 class Flight {
-    private final int TOTAL_SEATS = 10;
-    private Passenger[] seats;
-    private int bookedCount;
-
-    public Flight() {
-        seats = new Passenger[TOTAL_SEATS];
-        bookedCount = 0;
-    }
-    public void bookSeat(String name, int id) {
-        if (bookedCount >= TOTAL_SEATS) {
-            System.out.println("Error: Flight is full! No seats available.");
+    Passenger[] seats = new Passenger[10];
+    int count = 0;
+    void bookSeat(String name, int id) {
+        if (count == 10) {
+            System.out.println("Flight Full!");
             return;
         }
-        for (int i = 0; i < bookedCount; i++) {
-            if (seats[i].getPassengerId() == id) {
-                System.out.println("Booking Failed: Passenger ID " + id + " already has a reservation.");
+        for (int i = 0; i < count; i++) {
+            if (seats[i].id == id) {
+                System.out.println("ID already booked!");
                 return;
             }
         }
-        seats[bookedCount] = new Passenger(name, id);
-        bookedCount++;
-        System.out.println("Success: Seat booked successfully for " + name + " (ID: " + id + ").");
+        seats[count++] = new Passenger(name, id);
+        System.out.println("Seat Booked");
     }
-    public void displaySeatStatus() {
-        System.out.println("\n--- Flight Seat Status ---");
-        System.out.println("Total Seats: " + TOTAL_SEATS);
-        System.out.println("Booked: " + bookedCount);
-        System.out.println("Available: " + (TOTAL_SEATS - bookedCount));
-        System.out.println("--------------------------");
-        
-        if (bookedCount == 0) {
-            System.out.println("No seats booked yet.");
-        } else {
-            for (int i = 0; i < bookedCount; i++) {
-                System.out.println("Seat " + (i + 1) + ": [Passenger: " + seats[i].getName() + ", ID: " + seats[i].getPassengerId() + "]");
-            }
+    void showSeats() {
+        System.out.println("Booked Seats: " + count);
+        for (int i = 0; i < count; i++) {
+            System.out.println(seats[i].name + " - " + seats[i].id);
         }
-        System.out.println("--------------------------\n");
     }
 }
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Flight myFlight = new Flight();
-        boolean running = true;
-
-        System.out.println("Welcome to Flight Reservation System Simulator");
-
-        while (running) {
-            System.out.println("1. Book a Seat");
-            System.out.println("2. Show Seat Status");
-            System.out.println("3. Exit");
-            System.out.print("Enter your choice: ");
-            if (scanner.hasNextInt()) {
-                int choice = scanner.nextInt();
-
-                switch (choice) {
-                    case 1:
-                        System.out.print("Enter Passenger Name: ");
-                        scanner.nextLine(); // consume newline
-                        String name = scanner.nextLine();
-                        System.out.print("Enter Passenger ID: ");
-                        if (scanner.hasNextInt()) {
-                            int id = scanner.nextInt();
-                            myFlight.bookSeat(name, id);
-                        } else {
-                            System.out.println("Invalid ID format. Please use numbers.");
-                            scanner.next();
-                        }
-                        break;
-                    case 2:
-                        myFlight.displaySeatStatus();
-                        break;
-                    case 3:
-                        System.out.println("Exiting System. Thank you!");
-                        running = false;
-                        break;
-                    default:
-                        System.out.println("Invalid choice! Please try again.");
-                }
-            } else {
-                System.out.println("Please enter a valid number.");
-                scanner.next();
+        Scanner sc = new Scanner(System.in);
+        Flight f = new Flight();
+        while (true) {
+            System.out.println("\n1.Book Seat\n2.Show Seats\n3.Exit");
+            int choice = sc.nextInt();
+            if (choice == 1) {
+                sc.nextLine();
+                System.out.print("Name: ");
+                String name = sc.nextLine();
+                System.out.print("ID: ");
+                int id = sc.nextInt();
+                f.bookSeat(name, id);
+            } else if (choice == 2) {
+                f.showSeats();
+            } else if (choice == 3) {
+                break;
             }
         }
-        scanner.close();
+        sc.close();
     }
 }
